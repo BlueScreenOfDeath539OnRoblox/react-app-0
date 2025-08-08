@@ -1,0 +1,224 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #282c34;
+}
+
+
+.App {
+  background-color: #282c34;
+  /* background-image: url('https://gifsec.com/wp-content/uploads/2023/01/minecraft-gif-20.gif'); */
+  background-size: 160px;
+  min-height: 100vh;
+  color: white;
+  perspective: 400px;
+  display: block;
+  margin: 0px;
+  padding: 0px;
+}
+
+form {
+  perspective: 400px;
+}
+
+h1::selection {
+  background: white;
+  color: black;
+}
+
+img {
+  width: 50%;
+}
+
+.mcgif-container {
+  width: 1920px;
+  height: 1080px;
+  position: relative;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mcgif {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+  /* changed from cover to contain */
+  display: block;
+  background: #222;
+  /* optional: adds black bars for letterboxing */
+}
+
+.vertcenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.imgcontainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.iconbutton {
+  background-color: #2F88FF;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  transition: all .3s ease-in-out;
+}
+
+input[type="range"] {
+  width: 50%;
+  margin: 10px;
+  padding: 0px;
+  border-radius: 50px;
+  box-shadow: none;
+}
+
+.neon0 {
+  font-size: 16px;
+  color: white;
+  background-color: black;
+  border-radius: 10px;
+  border: 5px solid #111;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 1000;
+  width: 100%;
+  box-shadow: 0px 0px 30px 0px #aaffaa;
+  transition: all .5s;
+  padding: 10px;
+  margin: 5px;
+  transform: none;
+  transform-style: preserve-3d;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0px 0px 10px #aaffaa, 0px 0px 20px #aaffaa, 0px 0px 30px #aaffaa, 0px 0px 40px #aaffaa, 0px 0px 50px #aaffaa, 0px 0px 60px #aaffaa, 0px 0px 70px #aaffaa, 0px 0px 80px #aaffaa;
+  box-sizing: border-box;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* make interactive container inline */
+
+.interactivecontainer {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.inlinecontainer {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 10%;
+}
+
+.typable {
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ccc;
+  color: #333;
+  background-color: #f9f9f9;
+  padding: 10px;
+  box-sizing: border-box;
+  resize: none;
+  outline: none;
+  transition: all .3s ease-in-out;
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+}
+
+.neon0:hover {
+  box-shadow: 0px 0px 40px 10px #aaffaa;
+  transform: translate3d(0px, 0px, 10px);
+  transform-style: preserve-3d;
+}
+
+.neon0:active {
+  box-shadow: 0px 0px 40px -10px inset #aaffaa;
+}
+
+form {
+  border: 5px dotted white;
+}
+
+
+
+
+
+
+/*
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App {
+  background-color: #282c34;
+  background-image: url('https://gifsec.com/wp-content/uploads/2023/01/minecraft-gif-20.gif');
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+*/

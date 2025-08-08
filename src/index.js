@@ -1,13 +1,39 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import App from './pages/App';
+import Layout from './pages/Layout';
+import OtherApp from './pages/OtherApp'
+import NoPage from './pages/NoPage';
+import Tests from './pages/Tests';
+import TodoList from './pages/TodoList';
+import Game from './pages/GameTest';
+import Test2 from './pages/Symbols';
 import reportWebVitals from './reportWebVitals';
+
+export default function Main() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Layout />}>
+          <Route index element={<App />} />
+          <Route path='other' element={<OtherApp />} />
+          <Route path='testing' element={<Tests />} />
+          <Route path='todolist' element={<TodoList />} />
+          <Route path='*' element={<NoPage />} />
+          <Route path='plat0' element={<Game />} />
+          <Route path='symbols' element={<Test2 />} />
+        </Route>
+      </Routes>
+    </BrowserRouter >
+  )
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <Main />
   </React.StrictMode>
 );
 
