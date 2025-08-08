@@ -7,7 +7,7 @@ import Layout from './pages/Layout';
 import OtherApp from './pages/OtherApp'
 import NoPage from './pages/NoPage';
 import Tests from './pages/Tests';
-import TodoList from './pages/TodoList';
+import DiscordClone from './pages/DiscordClone';
 import Game from './pages/GameTest';
 import Test2 from './pages/Symbols';
 import reportWebVitals from './reportWebVitals';
@@ -20,7 +20,7 @@ export default function Main() {
           <Route index element={<App />} />
           <Route path='other' element={<OtherApp />} />
           <Route path='testing' element={<Tests />} />
-          <Route path='todolist' element={<TodoList />} />
+          <Route path='discordclone' element={<DiscordClone />} />
           <Route path='*' element={<NoPage />} />
           <Route path='plat0' element={<Game />} />
           <Route path='symbols' element={<Test2 />} />

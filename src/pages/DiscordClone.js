@@ -98,4 +98,4 @@ function DiscordClone() {
     );
 }
 
-export default TodoList;
+export default DiscordClone;

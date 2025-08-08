@@ -16,7 +16,7 @@ const Layout = () => {
                         <Link to="/testing">Test and Stuff</Link>
                     </li>
                     <li>
-                        <Link to="/todolist">List example</Link>
+                        <Link to="/discordclone">DiscordClone example</Link>
                     </li>
                     <li>
                         <Link to="/plat0">Platformer Test</Link>
