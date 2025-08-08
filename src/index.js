@@ -14,7 +14,7 @@ import reportWebVitals from './reportWebVitals';
 
 export default function Main() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/react-app-0">
       <Routes>
         <Route path='/' element={<Layout />}>
           <Route index element={<App />} />
