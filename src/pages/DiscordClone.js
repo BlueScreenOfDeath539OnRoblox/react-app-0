@@ -1,22 +1,57 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import './TodoList.css';
 
 function DiscordClone() {
     const [messages, setMessages] = useState([]);
     const [messageInput, setMessageInput] = useState('');
     const [username, setUsername] = useState('');
+    const [connected, setConnected] = useState(false);
     const fileInputRef = useRef(null);
     const [selectedFile, setSelectedFile] = useState(null);
+    const wsRef = useRef(null);
+
+    useEffect(() => {
+        // Connect to WebSocket server
+        wsRef.current = new WebSocket('ws://localhost:3001');
+
+        wsRef.current.onopen = () => {
+            console.log('Connected to server');
+            setConnected(true);
+        };
+
+        wsRef.current.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            setMessages(prevMessages => {
+                const newMessages = [...prevMessages, message];
+                // Keep only the last 100 messages
+                return newMessages.slice(-100);
+            });
+        };
+
+        wsRef.current.onclose = () => {
+            console.log('Disconnected from server');
+            setConnected(false);
+        };
+
+        return () => {
+            if (wsRef.current) {
+                wsRef.current.close();
+            }
+        };
+    }, []);
 
     const handleSendMessage = () => {
-        if (messageInput.trim() || selectedFile) {
+        if ((messageInput.trim() || selectedFile) && wsRef.current && connected) {
             const newMessage = {
                 username: username || 'Anonymous',
                 text: messageInput,
                 file: selectedFile,
                 timestamp: new Date().toLocaleTimeString()
             };
-            setMessages([...messages, newMessage]);
+
+            // Send message through WebSocket
+            wsRef.current.send(JSON.stringify(newMessage));
+
             setMessageInput('');
             setSelectedFile(null);
             if (fileInputRef.current) {
