@@ -3,14 +3,13 @@ const config = {
     development: 'ws://localhost:3001',
 
     // Production WebSocket URL (using Render.com URL)
-    production: 'wss://discord-clone-websocket.onrender.com',
+    production: 'ws://discord-clone-websocket.onrender.com',  // Changed from wss to ws
 
     // Get the appropriate WebSocket URL based on environment
     get websocketUrl() {
-        if (window.location.hostname === 'localhost') {
-            return this.development;
-        }
-        return this.production;
+        const url = window.location.hostname === 'localhost' ? this.development : this.production;
+        console.log('Using WebSocket URL:', url);
+        return url;
     }
 };
 

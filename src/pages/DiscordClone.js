@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import './TodoList.css';
+import config from '../config';
 
-// Get the WebSocket URL from environment or default to current hostname
-const WS_URL = process.env.REACT_APP_WS_URL || `ws://${window.location.hostname}:3001`;
 const RECONNECT_DELAY = 2000;
 
 function DiscordClone() {
@@ -18,7 +17,7 @@ function DiscordClone() {
 
     const connect = useCallback(() => {
         try {
-            wsRef.current = new WebSocket(WS_URL);
+            wsRef.current = new WebSocket(config.websocketUrl);
 
             wsRef.current.onopen = () => {
                 console.log('Connected to server');

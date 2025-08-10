@@ -4,10 +4,15 @@
     "description": "WebSocket server for Discord clone",
     "main": "index.js",
     "scripts": {
-        "start": "node index.js"
+        "start": "node index.js",
+        "dev": "node index.js"
     },
     "dependencies": {
+        "cors": "^2.8.5",
         "express": "^4.17.1",
         "ws": "^8.2.3"
+    },
+    "engines": {
+        "node": ">=14.0.0"
     }
 }
