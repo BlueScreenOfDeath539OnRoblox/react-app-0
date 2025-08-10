@@ -3,7 +3,7 @@ const config = {
     development: 'ws://localhost:3001',
 
     // Production WebSocket URL (using Render.com URL)
-    production: 'ws://discord-clone-websocket.onrender.com',  // Changed from wss to ws
+    production: 'wss://discord-clone-websocket.onrender.com/ws',  // Using secure WebSocket with specific path
 
     // Get the appropriate WebSocket URL based on environment
     get websocketUrl() {
