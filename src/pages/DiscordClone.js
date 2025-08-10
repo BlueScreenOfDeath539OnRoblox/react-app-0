@@ -1,44 +1,81 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import './TodoList.css';
+
+// Get the WebSocket URL from environment or default to current hostname
+const WS_URL = process.env.REACT_APP_WS_URL || `ws://${window.location.hostname}:3001`;
+const RECONNECT_DELAY = 2000;
 
 function DiscordClone() {
     const [messages, setMessages] = useState([]);
     const [messageInput, setMessageInput] = useState('');
     const [username, setUsername] = useState('');
     const [connected, setConnected] = useState(false);
+    const [connectionStatus, setConnectionStatus] = useState('Connecting...');
     const fileInputRef = useRef(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const wsRef = useRef(null);
+    const reconnectTimeoutRef = useRef(null);
+
+    const connect = useCallback(() => {
+        try {
+            wsRef.current = new WebSocket(WS_URL);
+
+            wsRef.current.onopen = () => {
+                console.log('Connected to server');
+                setConnected(true);
+                setConnectionStatus('Connected');
+                // Clear any reconnection timeout
+                if (reconnectTimeoutRef.current) {
+                    clearTimeout(reconnectTimeoutRef.current);
+                    reconnectTimeoutRef.current = null;
+                }
+            };
+
+            wsRef.current.onmessage = (event) => {
+                try {
+                    const message = JSON.parse(event.data);
+                    setMessages(prevMessages => {
+                        const newMessages = [...prevMessages, message];
+                        return newMessages.slice(-100);
+                    });
+                } catch (err) {
+                    console.error('Error parsing message:', err);
+                }
+            };
+
+            wsRef.current.onclose = () => {
+                console.log('Disconnected from server');
+                setConnected(false);
+                setConnectionStatus('Reconnecting...');
+                // Try to reconnect after delay
+                reconnectTimeoutRef.current = setTimeout(connect, RECONNECT_DELAY);
+            };
+
+            wsRef.current.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                setConnectionStatus('Connection error, retrying...');
+            };
+
+        } catch (error) {
+            console.error('Connection error:', error);
+            setConnectionStatus('Connection error, retrying...');
+            // Try to reconnect after delay
+            reconnectTimeoutRef.current = setTimeout(connect, RECONNECT_DELAY);
+        }
+    }, []);
 
     useEffect(() => {
-        // Connect to WebSocket server
-        wsRef.current = new WebSocket('ws://localhost:3001');
-
-        wsRef.current.onopen = () => {
-            console.log('Connected to server');
-            setConnected(true);
-        };
-
-        wsRef.current.onmessage = (event) => {
-            const message = JSON.parse(event.data);
-            setMessages(prevMessages => {
-                const newMessages = [...prevMessages, message];
-                // Keep only the last 100 messages
-                return newMessages.slice(-100);
-            });
-        };
-
-        wsRef.current.onclose = () => {
-            console.log('Disconnected from server');
-            setConnected(false);
-        };
+        connect();
 
         return () => {
             if (wsRef.current) {
                 wsRef.current.close();
             }
+            if (reconnectTimeoutRef.current) {
+                clearTimeout(reconnectTimeoutRef.current);
+            }
         };
-    }, []);
+    }, [connect]);
 
     const handleSendMessage = () => {
         if ((messageInput.trim() || selectedFile) && wsRef.current && connected) {
@@ -83,6 +120,9 @@ function DiscordClone() {
                     placeholder="Enter your username"
                     className="username-input"
                 />
+                <span className={`connection-status ${connected ? 'connected' : 'disconnected'}`}>
+                    {connectionStatus}
+                </span>
             </div>
 
             <div className="messages-container">

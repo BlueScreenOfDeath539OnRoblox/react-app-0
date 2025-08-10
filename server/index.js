@@ -26,9 +26,9 @@ wss.on('connection', (ws) => {
             messages = messages.slice(-100);
         }
 
-        // Broadcast to all clients
+        // Broadcast to all clients, including sender
         wss.clients.forEach(client => {
-            if (client !== ws && client.readyState === WebSocket.OPEN) {
+            if (client.readyState === WebSocket.OPEN) {
                 client.send(JSON.stringify(message));
             }
         });

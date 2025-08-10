@@ -8,8 +8,28 @@
 
 .username-section {
     padding: 1rem;
-    background-color: #202225;
-    border-bottom: 1px solid #40444b;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.connection-status {
+    font-size: 0.9rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    background-color: #40444b;
+}
+
+.connection-status.connected {
+    color: #43b581;
+}
+
+.connection-status.disconnected {
+    color: #f04747;
+}
+
+background-color: #202225;
+border-bottom: 1px solid #40444b;
 }
 
 .username-input {
