@@ -113,27 +113,18 @@ function DiscordClone() {
             };
 
             if (selectedFile) {
-                // Make sure we have the uploadPreview data
-                if (!uploadPreview?.url && (getFileType(selectedFile) === 'image' || getFileType(selectedFile) === 'video')) {
-                    try {
-                        const base64 = await fileToBase64(selectedFile);
-                        newMessage.file = {
-                            url: base64,
-                            name: selectedFile.name,
-                            type: getFileType(selectedFile),
-                            mimeType: selectedFile.type
-                        };
-                    } catch (error) {
-                        console.error('Error converting file to base64:', error);
-                        return;
-                    }
-                } else {
+                try {
+                    // Always convert file to base64, regardless of type
+                    const base64 = await fileToBase64(selectedFile);
                     newMessage.file = {
-                        url: uploadPreview?.url,
+                        url: base64,
                         name: selectedFile.name,
                         type: getFileType(selectedFile),
                         mimeType: selectedFile.type
                     };
+                } catch (error) {
+                    console.error('Error converting file to base64:', error);
+                    return;
                 }
             }
 
@@ -142,6 +133,7 @@ function DiscordClone() {
 
             setMessageInput('');
             setSelectedFile(null);
+            setUploadPreview(null);
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
@@ -206,19 +198,21 @@ function DiscordClone() {
                         {message.file && (
                             <div className="message-file">
                                 {message.file.type === 'image' && (
-                                    <img src={message.file.url} alt={message.file.name} className="uploaded-image" />
+                                    <a href={message.file.url} target="_blank" rel="noopener noreferrer">
+                                        <img src={message.file.url} alt={message.file.name} className="uploaded-image" />
+                                    </a>
                                 )}
                                 {message.file.type === 'video' && (
-                                    <video controls className="uploaded-video">
+                                    <video controls className="uploaded-video" preload="metadata">
                                         <source src={message.file.url} type={message.file.mimeType} />
                                         Your browser does not support the video tag.
                                     </video>
                                 )}
                                 {message.file.type === 'other' && (
-                                    <div className="file-info">
+                                    <a href={message.file.url} download={message.file.name} className="file-info">
                                         <span className="file-icon">📎</span>
                                         <span className="file-name">{message.file.name}</span>
-                                    </div>
+                                    </a>
                                 )}
                             </div>
                         )}
