@@ -71,9 +71,44 @@
     word-wrap: break-word;
 }
 
-.message-file img {
+.message-file {
+    margin-top: 0.5rem;
+}
+
+.message-file img,
+.message-file video {
     max-width: 300px;
     max-height: 300px;
+    border-radius: 4px;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background-color: #2f3136;
+    border-radius: 4px;
+    max-width: 300px;
+}
+
+.file-icon {
+    font-size: 1.2rem;
+}
+
+.file-name {
+    color: #dcddde;
+    word-break: break-all;
+}
+
+.upload-preview {
+    margin-top: 0.5rem;
+}
+
+.preview-image,
+.preview-video {
+    max-width: 200px;
+    max-height: 200px;
     border-radius: 4px;
     margin-top: 0.5rem;
 }

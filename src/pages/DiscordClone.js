@@ -12,8 +12,27 @@ function DiscordClone() {
     const [connectionStatus, setConnectionStatus] = useState('Connecting...');
     const fileInputRef = useRef(null);
     const [selectedFile, setSelectedFile] = useState(null);
+    const [uploadPreview, setUploadPreview] = useState(null);
     const wsRef = useRef(null);
     const reconnectTimeoutRef = useRef(null);
+
+    // Helper function to get file type
+    const getFileType = (file) => {
+        if (!file) return null;
+        if (file.type.startsWith('image/')) return 'image';
+        if (file.type.startsWith('video/')) return 'video';
+        return 'other';
+    };
+
+    // Helper function to convert file to base64
+    const fileToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    };
 
     const connect = useCallback(() => {
         try {
@@ -81,9 +100,17 @@ function DiscordClone() {
             const newMessage = {
                 username: username || 'Anonymous',
                 text: messageInput,
-                file: selectedFile,
                 timestamp: new Date().toLocaleTimeString()
             };
+
+            if (selectedFile) {
+                newMessage.file = {
+                    url: uploadPreview?.url,
+                    name: selectedFile.name,
+                    type: getFileType(selectedFile),
+                    mimeType: selectedFile.type
+                };
+            }
 
             // Send message through WebSocket
             wsRef.current.send(JSON.stringify(newMessage));
@@ -96,9 +123,28 @@ function DiscordClone() {
         }
     };
 
-    const handleFileChange = (e) => {
+    const handleFileChange = async (e) => {
         if (e.target.files && e.target.files[0]) {
-            setSelectedFile(URL.createObjectURL(e.target.files[0]));
+            const file = e.target.files[0];
+            setSelectedFile(file);
+
+            if (getFileType(file) === 'image' || getFileType(file) === 'video') {
+                try {
+                    const base64 = await fileToBase64(file);
+                    setUploadPreview({
+                        type: getFileType(file),
+                        url: base64,
+                        name: file.name
+                    });
+                } catch (error) {
+                    console.error('Error creating preview:', error);
+                }
+            } else {
+                setUploadPreview({
+                    type: 'other',
+                    name: file.name
+                });
+            }
         }
     };
 
@@ -134,7 +180,21 @@ function DiscordClone() {
                         {message.text && <div className="message-text">{message.text}</div>}
                         {message.file && (
                             <div className="message-file">
-                                <img src={message.file} alt="uploaded content" />
+                                {message.file.type === 'image' && (
+                                    <img src={message.file.url} alt={message.file.name} className="uploaded-image" />
+                                )}
+                                {message.file.type === 'video' && (
+                                    <video controls className="uploaded-video">
+                                        <source src={message.file.url} type={message.file.mimeType} />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                )}
+                                {message.file.type === 'other' && (
+                                    <div className="file-info">
+                                        <span className="file-icon">📎</span>
+                                        <span className="file-name">{message.file.name}</span>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
@@ -155,10 +215,29 @@ function DiscordClone() {
                             type="file"
                             onChange={handleFileChange}
                             ref={fileInputRef}
-                            accept="image/*"
+                            accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt"
                             className="file-input"
                             id="file-input"
                         />
+                        {uploadPreview && (
+                            <div className="upload-preview">
+                                {uploadPreview.type === 'image' && (
+                                    <img src={uploadPreview.url} alt={uploadPreview.name} className="preview-image" />
+                                )}
+                                {uploadPreview.type === 'video' && (
+                                    <video controls className="preview-video">
+                                        <source src={uploadPreview.url} />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                )}
+                                {uploadPreview.type === 'other' && (
+                                    <div className="file-info">
+                                        <span className="file-icon">📎</span>
+                                        <span className="file-name">{uploadPreview.name}</span>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                         <label htmlFor="file-input" className="file-label">
                             📎
                         </label>

@@ -3,13 +3,27 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const server = require('http').createServer(app);
+
+// Enable CORS for all routes with specific options
+app.use(cors({
+    origin: [
+        'http://localhost:3000',
+        'https://bluescreenofdeath539onroblox.github.io'
+    ],
+    methods: ['GET', 'POST'],
+    credentials: true
+}));
+
+// Create WebSocket server with specific options
 const wss = new WebSocket.Server({
     server,
-    // Enable client connections from any origin
-    verifyClient: () => true
-});
-
-// Enable CORS for all routes
+    path: '/ws', // Specific path for WebSocket connections
+    verifyClient: (info) => {
+        const origin = info.origin || info.req.headers.origin;
+        console.log('Connection attempt from origin:', origin);
+        return true; // Allow all connections for now
+    }
+});// Enable CORS for all routes
 app.use(cors());
 
 // Add a health check endpoint
@@ -61,7 +75,39 @@ wss.on('connection', (ws) => {
     });
 });
 
+// More detailed error handling for WebSocket
+wss.on('error', (error) => {
+    console.error('WebSocket Server Error:', error);
+});
+
+server.on('error', (error) => {
+    console.error('HTTP Server Error:', error);
+});
+
+// Add more detailed health check
+app.get('/', (req, res) => {
+    res.json({
+        status: 'ok',
+        connections: wss.clients.size,
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString()
+    });
+});
+
+// Handle graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('SIGTERM received. Closing server...');
+    wss.close(() => {
+        console.log('WebSocket server closed.');
+        server.close(() => {
+            console.log('HTTP server closed.');
+            process.exit(0);
+        });
+    });
+});
+
 const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
+    console.log('Environment:', process.env.NODE_ENV);
 });
