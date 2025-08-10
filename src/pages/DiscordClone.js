@@ -11,10 +11,17 @@ function DiscordClone() {
     const [connected, setConnected] = useState(false);
     const [connectionStatus, setConnectionStatus] = useState('Connecting...');
     const fileInputRef = useRef(null);
+    const messagesContainerRef = useRef(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploadPreview, setUploadPreview] = useState(null);
     const wsRef = useRef(null);
     const reconnectTimeoutRef = useRef(null);
+
+    const scrollToBottom = useCallback(() => {
+        if (messagesContainerRef.current) {
+            messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+        }
+    }, []);
 
     // Helper function to get file type
     const getFileType = (file) => {
@@ -54,6 +61,8 @@ function DiscordClone() {
                     const message = JSON.parse(event.data);
                     setMessages(prevMessages => {
                         const newMessages = [...prevMessages, message];
+                        // Trigger scroll after state update
+                        setTimeout(scrollToBottom, 0);
                         return newMessages.slice(-100);
                     });
                 } catch (err) {
@@ -95,21 +104,37 @@ function DiscordClone() {
         };
     }, [connect]);
 
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
         if ((messageInput.trim() || selectedFile) && wsRef.current && connected) {
-            const newMessage = {
+            let newMessage = {
                 username: username || 'Anonymous',
                 text: messageInput,
                 timestamp: new Date().toLocaleTimeString()
             };
 
             if (selectedFile) {
-                newMessage.file = {
-                    url: uploadPreview?.url,
-                    name: selectedFile.name,
-                    type: getFileType(selectedFile),
-                    mimeType: selectedFile.type
-                };
+                // Make sure we have the uploadPreview data
+                if (!uploadPreview?.url && (getFileType(selectedFile) === 'image' || getFileType(selectedFile) === 'video')) {
+                    try {
+                        const base64 = await fileToBase64(selectedFile);
+                        newMessage.file = {
+                            url: base64,
+                            name: selectedFile.name,
+                            type: getFileType(selectedFile),
+                            mimeType: selectedFile.type
+                        };
+                    } catch (error) {
+                        console.error('Error converting file to base64:', error);
+                        return;
+                    }
+                } else {
+                    newMessage.file = {
+                        url: uploadPreview?.url,
+                        name: selectedFile.name,
+                        type: getFileType(selectedFile),
+                        mimeType: selectedFile.type
+                    };
+                }
             }
 
             // Send message through WebSocket
@@ -170,7 +195,7 @@ function DiscordClone() {
                 </span>
             </div>
 
-            <div className="messages-container">
+            <div className="messages-container" ref={messagesContainerRef}>
                 {messages.map((message, index) => (
                     <div key={index} className="message">
                         <div className="message-header">
