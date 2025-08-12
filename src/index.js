@@ -9,7 +9,7 @@ import NoPage from './pages/NoPage';
 import Tests from './pages/Tests';
 import DiscordClone from './pages/DiscordClone';
 import Game from './pages/GameTest';
-import Test2 from './pages/Symbols';
+import Test2 from './pages/3dTesting';
 import reportWebVitals from './reportWebVitals';
 import Eagler0 from './pages/EverythingEagler';
 

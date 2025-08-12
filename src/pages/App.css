@@ -78,6 +78,23 @@ img {
   transition: all .3s ease-in-out;
 }
 
+.nametag {
+  display: inline-block;
+  background-color: rgba(84, 173, 255, 0.381);
+  color: rgb(182, 244, 255);
+  padding: 5px 10px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  transition: all .3s ease-in-out;
+}
+
+.nametag:hover {
+  background-color: rgba(84, 173, 255, 0.5);
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
+
 input[type="range"] {
   width: 50%;
   margin: 10px;

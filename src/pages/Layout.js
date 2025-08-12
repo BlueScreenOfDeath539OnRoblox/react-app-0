@@ -22,7 +22,7 @@ const Layout = () => {
                         <Link to="/plat0">Platformer Test</Link>
                     </li>
                     <li>
-                        <Link to="/symbols">Symbols Test</Link>
+                        <Link to="/symbols">3d Testing</Link>
                     </li>
                     <li>
                         <Link to="/eagler0">Everything Eaglercraft</Link>
