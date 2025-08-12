@@ -11,6 +11,7 @@ import DiscordClone from './pages/DiscordClone';
 import Game from './pages/GameTest';
 import Test2 from './pages/Symbols';
 import reportWebVitals from './reportWebVitals';
+import Eagler0 from './pages/EverythingEagler';
 
 export default function Main() {
   return (
@@ -24,6 +25,7 @@ export default function Main() {
           <Route path='*' element={<NoPage />} />
           <Route path='plat0' element={<Game />} />
           <Route path='symbols' element={<Test2 />} />
+          <Route path='eagler0' element={<Eagler0 />} />
         </Route>
       </Routes>
     </BrowserRouter >
