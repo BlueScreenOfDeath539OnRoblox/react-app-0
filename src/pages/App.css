@@ -112,7 +112,7 @@ img {
 
 a-scene {
   width: 100%;
-  height: 75%;
+  height: 100px;
   display: block;
   position: relative;
 }
