@@ -1,9 +1,14 @@
 .discord-container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: calc(100vh - 120px);
+    /* Account for navbar and padding */
     background-color: #36393f;
     color: #dcddde;
+    position: relative;
+    margin: 20px;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 .username-section {
@@ -41,6 +46,9 @@
     flex-grow: 1;
     padding: 1rem;
     overflow-y: auto;
+    max-height: calc(100vh - 250px);
+    /* Account for input area, username section, and padding */
+    min-height: 200px;
 }
 
 .message {
