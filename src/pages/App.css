@@ -23,7 +23,10 @@ form {
   perspective: 400px;
 }
 
-h1::selection {
+h1::selection,
+h2::selection,
+h3::selection,
+p::selection {
   background: white;
   color: black;
 }
