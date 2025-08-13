@@ -6,7 +6,7 @@ function Test2() {
         <>
             <h2>Press <div className='keyshortcutindicator'>Crtl + Alt + I</div> to open A-Frame editor.</h2>
             <div className="App">
-                <a-scene background="color: #555" keyboard-shortcuts="" screenshot="" xr-mode-ui="" device-orientation-permission-ui="" fog="color: #555; density: 1">
+                <a-scene embedded background="color: #555" keyboard-shortcuts="" screenshot="" xr-mode-ui="" device-orientation-permission-ui="" fog="color: #555; density: 1">
                     <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9" shadow=""></a-box>
 
                     <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D" shadow="" material="color: #8f5d00"></a-cylinder>
