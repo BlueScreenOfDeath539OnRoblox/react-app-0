@@ -27,6 +27,12 @@ const Layout = () => {
                     <li>
                         <Link to="/eagler0">Everything Eaglercraft</Link>
                     </li>
+                    <li>
+                        <Link to="/links">Links Collection</Link>
+                    </li>
+                    <li>
+                        <Link to="/add-link">Add Link</Link>
+                    </li>
                 </ul>
             </nav>
 
