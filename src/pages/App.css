@@ -222,7 +222,47 @@ form {
   border: 5px dotted white;
 }
 
+/* Base page container */
+.page-container {
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* A-Frame container */
+.aframe-container {
+  position: relative;
+  width: 100%;
+  height: 80vh;
+  margin: 20px 0;
+}
+
+/* A-Frame scene */
+.aframe-scene {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Inspector styles */
 .a-inspector-wrapper {
   position: fixed !important;
   z-index: 9999;
+}
+
+/* Prevent body overflow issues */
+body {
+  overflow-y: auto !important;
+  overflow-x: hidden;
+}
+
+/* Key shortcut indicator */
+.keyshortcutindicator {
+  background-color: #f0f0f0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
 }

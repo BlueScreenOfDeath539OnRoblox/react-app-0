@@ -52,11 +52,12 @@ function Test2() {
     }, [navigate]);
 
     return (
-        <div onKeyDown={handleKeyPress}>
+        <div className="page-container" onKeyDown={handleKeyPress}>
             <h1>Press <span className='keyshortcutindicator'>Ctrl + Alt + I</span> to open A-Frame editor.</h1>
-            <div className="App">
+            <div className="aframe-container">
                 <a-scene
                     embedded
+                    className="aframe-scene"
                     background="color: #555"
                     keyboard-shortcuts="enabled: false"
                     screenshot="enabled: false"
