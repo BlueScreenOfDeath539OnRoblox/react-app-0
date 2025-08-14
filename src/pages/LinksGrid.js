@@ -16,28 +16,30 @@ function LinksGrid() {
                 setStatus('Connected');
 
                 // Request existing links
-                ws.send(JSON.stringify({ type: 'request_links' }));
+                ws.send(JSON.stringify({ header: 'LINKS', type: 'request_links' }));
             };
 
             ws.onmessage = (event) => {
                 try {
                     const message = JSON.parse(event.data);
 
-                    if (message.type === 'link') {
-                        // Add new link only if it doesn't already exist
-                        setLinks(prevLinks => {
-                            const exists = prevLinks.some(link =>
-                                link.url === message.url &&
-                                link.timestamp === message.timestamp
-                            );
-                            if (!exists) {
-                                return [...prevLinks, message];
-                            }
-                            return prevLinks;
-                        });
-                    } else if (message.type === 'links_list') {
-                        // Replace entire links array with new list
-                        setLinks([...message.links]);
+                    if (message.header === 'LINKS') {
+                        if (message.type === 'link') {
+                            // Add new link only if it doesn't already exist
+                            setLinks(prevLinks => {
+                                const exists = prevLinks.some(link =>
+                                    link.url === message.url &&
+                                    link.timestamp === message.timestamp
+                                );
+                                if (!exists) {
+                                    return [...prevLinks, message];
+                                }
+                                return prevLinks;
+                            });
+                        } else if (message.type === 'links_list') {
+                            // Replace entire links array with new list
+                            setLinks([...message.links]);
+                        }
                     }
                 } catch (err) {
                     console.error('Error parsing message:', err);

@@ -59,12 +59,15 @@ function DiscordClone() {
             wsRef.current.onmessage = (event) => {
                 try {
                     const message = JSON.parse(event.data);
-                    setMessages(prevMessages => {
-                        const newMessages = [...prevMessages, message];
-                        // Trigger scroll after state update
-                        setTimeout(scrollToBottom, 0);
-                        return newMessages.slice(-100);
-                    });
+                    // Only process messages with chat header
+                    if (message.header === 'CHAT') {
+                        setMessages(prevMessages => {
+                            const newMessages = [...prevMessages, message];
+                            // Trigger scroll after state update
+                            setTimeout(scrollToBottom, 0);
+                            return newMessages.slice(-100);
+                        });
+                    }
                 } catch (err) {
                     console.error('Error parsing message:', err);
                 }
@@ -107,6 +110,7 @@ function DiscordClone() {
     const handleSendMessage = async () => {
         if ((messageInput.trim() || selectedFile) && wsRef.current && connected) {
             let newMessage = {
+                header: 'CHAT',
                 username: username || 'Anonymous',
                 text: messageInput,
                 timestamp: new Date().toLocaleTimeString()

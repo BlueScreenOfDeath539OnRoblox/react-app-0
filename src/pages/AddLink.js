@@ -16,6 +16,7 @@ function AddLink() {
 
             ws.onopen = () => {
                 const message = {
+                    header: 'LINKS',
                     type: 'link',
                     name: linkName,
                     url: url,
