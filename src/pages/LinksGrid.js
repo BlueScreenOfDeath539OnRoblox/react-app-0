@@ -24,9 +24,20 @@ function LinksGrid() {
                     const message = JSON.parse(event.data);
 
                     if (message.type === 'link') {
-                        setLinks(prevLinks => [...prevLinks, message]);
+                        // Add new link only if it doesn't already exist
+                        setLinks(prevLinks => {
+                            const exists = prevLinks.some(link =>
+                                link.url === message.url &&
+                                link.timestamp === message.timestamp
+                            );
+                            if (!exists) {
+                                return [...prevLinks, message];
+                            }
+                            return prevLinks;
+                        });
                     } else if (message.type === 'links_list') {
-                        setLinks(message.links);
+                        // Replace entire links array with new list
+                        setLinks([...message.links]);
                     }
                 } catch (err) {
                     console.error('Error parsing message:', err);
@@ -36,6 +47,8 @@ function LinksGrid() {
             ws.onclose = () => {
                 setConnected(false);
                 setStatus('Disconnected - Reconnecting...');
+                // Clear links before reconnecting to prevent duplicates
+                setLinks([]);
                 setTimeout(connect, 2000);
             };
 
