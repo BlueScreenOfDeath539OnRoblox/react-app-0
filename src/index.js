@@ -12,6 +12,8 @@ import Game from './pages/GameTest';
 import Test2 from './pages/3dTesting';
 import reportWebVitals from './reportWebVitals';
 import Eagler0 from './pages/EverythingEagler';
+import LinksGrid from './pages/LinksGrid';
+import AddLink from './pages/AddLink';
 
 export default function Main() {
   return (
@@ -26,6 +28,8 @@ export default function Main() {
           <Route path='plat0' element={<Game />} />
           <Route path='symbols' element={<Test2 />} />
           <Route path='eagler0' element={<Eagler0 />} />
+          <Route path='links' element={<LinksGrid />} />
+          <Route path='add-link' element={<AddLink />} />
         </Route>
       </Routes>
     </BrowserRouter >
