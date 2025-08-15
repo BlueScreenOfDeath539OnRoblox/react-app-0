@@ -29,41 +29,29 @@ function LinksGrid() {
         document.querySelector('.passcode-overlay').style.display = 'none';
     };
 
-    const websocketRef = useCallback(() => {
-        let ws = null;
-
-        const connectWebSocket = () => {
-            ws = new WebSocket(config.websocketUrl);
-
-            ws.onopen = () => {
-                setConnected(true);
-                setStatus('Connected');
-
-                // Request existing links
-                ws.send(JSON.stringify({ header: 'LINKS', type: 'request_links' }));
-            };
-
-            return ws;
-        };
-
-        return connectWebSocket();
-    }, []);
+    const [ws, setWs] = useState(null);
 
     const connect = useCallback(() => {
-        try {
-            const ws = websocketRef();
+        if (ws) {
+            ws.close();
+        }
 
-            ws.onopen = () => {
+        try {
+            const newWs = new WebSocket(config.websocketUrl);
+
+            newWs.onopen = () => {
                 setConnected(true);
                 setStatus('Connected');
+                console.log('WebSocket connected');
 
                 // Request existing links
-                ws.send(JSON.stringify({ header: 'LINKS', type: 'request_links' }));
+                newWs.send(JSON.stringify({ header: 'LINKS', type: 'request_links' }));
             };
 
-            ws.onmessage = (event) => {
+            newWs.onmessage = (event) => {
                 try {
                     const message = JSON.parse(event.data);
+                    console.log('Received message:', message);
 
                     if (message.header === 'LINKS') {
                         if (message.type === 'link') {
@@ -88,20 +76,25 @@ function LinksGrid() {
                 }
             };
 
-            ws.onclose = () => {
+            newWs.onclose = () => {
                 setConnected(false);
                 setStatus('Disconnected - Reconnecting...');
+                setWs(null);
                 // Clear links before reconnecting to prevent duplicates
                 setLinks([]);
                 setTimeout(connect, 2000);
             };
 
-            ws.onerror = () => {
+            newWs.onerror = (error) => {
+                console.error('WebSocket error:', error);
                 setStatus('Connection error');
             };
 
+            setWs(newWs);
             return () => {
-                ws.close();
+                if (newWs) {
+                    newWs.close();
+                }
             };
         } catch (error) {
             setStatus('Connection error');
@@ -144,13 +137,19 @@ function LinksGrid() {
 
     const handleDeleteClick = (e, link) => {
         e.stopPropagation(); // Prevent triggering the link click
+        console.log('Delete clicked for link:', link);
         setLinkToDelete(link);
         setShowDeleteConfirm(true);
     };
 
     const handleConfirmDelete = () => {
-        const ws = websocketRef();
-        if (ws.readyState === WebSocket.OPEN) {
+        if (!ws || ws.readyState !== WebSocket.OPEN) {
+            console.error('WebSocket is not connected');
+            return;
+        }
+
+        try {
+            console.log('Sending delete request for:', linkToDelete);
             ws.send(JSON.stringify({
                 header: 'LINKS',
                 type: 'delete_link',
@@ -159,17 +158,8 @@ function LinksGrid() {
             }));
             setShowDeleteConfirm(false);
             setLinkToDelete(null);
-        } else {
-            ws.onopen = () => {
-                ws.send(JSON.stringify({
-                    header: 'LINKS',
-                    type: 'delete_link',
-                    url: linkToDelete.url,
-                    timestamp: linkToDelete.timestamp
-                }));
-                setShowDeleteConfirm(false);
-                setLinkToDelete(null);
-            };
+        } catch (error) {
+            console.error('Error sending delete request:', error);
         }
     };
 
