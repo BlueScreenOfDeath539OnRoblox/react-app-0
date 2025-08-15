@@ -13,6 +13,7 @@ function LinksGrid() {
     const [linkToDelete, setLinkToDelete] = useState(null);
     const [selectedUrl, setSelectedUrl] = useState(null);
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const [showScrollNotification, setShowScrollNotification] = useState(false);
 
     const correctPasscode = 'reactjsforthewin';
 
@@ -138,6 +139,14 @@ function LinksGrid() {
 
     const handleLinkClick = (url) => {
         setSelectedUrl(url);
+        setShowScrollNotification(true);
+        setTimeout(() => {
+            const embedWrapper = document.querySelector('.embed-wrapper');
+            if (embedWrapper) {
+                embedWrapper.scrollIntoView({ behavior: 'smooth' });
+                setTimeout(() => setShowScrollNotification(false), 3000);
+            }
+        }, 100);
     };
 
     const handleFullscreen = () => {
@@ -258,7 +267,7 @@ function LinksGrid() {
                     <div
                         key={index}
                         className="link-card"
-                        onClick={isAuthenticated ? () => handleLinkClick(link.url) : () => setShowError(true)}
+                        onClick={() => handleLinkClick(link.url)}
                     >
                         <h3 className="link-name">{link.name}</h3>
                         <p className="link-description">{link.description}</p>
@@ -284,6 +293,11 @@ function LinksGrid() {
                     </div>
                 ))}
             </div>
+            {showScrollNotification && (
+                <div className="scroll-notification">
+                    📥 Scroll down to view the embedded content
+                </div>
+            )}
             {selectedUrl && (
                 <div className="embed-wrapper">
                     <div id="embed-container" className="embed-container">
