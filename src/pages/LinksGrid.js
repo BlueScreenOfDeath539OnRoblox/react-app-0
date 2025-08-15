@@ -11,6 +11,8 @@ function LinksGrid() {
     const [showError, setShowError] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [linkToDelete, setLinkToDelete] = useState(null);
+    const [selectedUrl, setSelectedUrl] = useState(null);
+    const [isFullscreen, setIsFullscreen] = useState(false);
 
     const correctPasscode = 'reactjsforthewin';
 
@@ -91,8 +93,32 @@ function LinksGrid() {
     }, [connect]);
 
     const handleLinkClick = (url) => {
-        window.open(url, '_blank', 'noopener,noreferrer');
+        setSelectedUrl(url);
     };
+
+    const handleFullscreen = () => {
+        const embedContainer = document.getElementById('embed-container');
+        if (embedContainer) {
+            if (!document.fullscreenElement) {
+                embedContainer.requestFullscreen();
+                setIsFullscreen(true);
+            } else {
+                document.exitFullscreen();
+                setIsFullscreen(false);
+            }
+        }
+    };
+
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => {
+            document.removeEventListener('fullscreenchange', handleFullscreenChange);
+        };
+    }, []);
 
     const handleDeleteClick = (e, link) => {
         e.stopPropagation(); // Prevent triggering the link click
@@ -190,6 +216,26 @@ function LinksGrid() {
                     </div>
                 ))}
             </div>
+            {selectedUrl && (
+                <div className="embed-wrapper">
+                    <div id="embed-container" className="embed-container">
+                        <iframe
+                            src={selectedUrl}
+                            title="Embedded content"
+                            width="100%"
+                            height="100%"
+                            frameBorder="0"
+                            allowFullScreen
+                        />
+                    </div>
+                    <button
+                        className="fullscreen-button"
+                        onClick={handleFullscreen}
+                    >
+                        {isFullscreen ? 'Exit Fullscreen (Esc)' : 'Fullscreen'}
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
