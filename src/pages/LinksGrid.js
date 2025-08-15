@@ -18,18 +18,40 @@ function LinksGrid() {
 
     const handlePasscodeSubmit = (e) => {
         e.preventDefault();
-        if (passcode === correctPasscode) {
-            setIsAuthenticated(true);
-            setShowError(false);
-        } else {
+        setIsAuthenticated(passcode === correctPasscode);
+        if (passcode !== correctPasscode) {
             setShowError(true);
             setPasscode('');
+        } else {
+            setShowError(false);
         }
+        // Remove the passcode overlay regardless of the result
+        document.querySelector('.passcode-overlay').style.display = 'none';
     };
+
+    const websocketRef = useCallback(() => {
+        let ws = null;
+
+        const connectWebSocket = () => {
+            ws = new WebSocket(config.websocketUrl);
+
+            ws.onopen = () => {
+                setConnected(true);
+                setStatus('Connected');
+
+                // Request existing links
+                ws.send(JSON.stringify({ header: 'LINKS', type: 'request_links' }));
+            };
+
+            return ws;
+        };
+
+        return connectWebSocket();
+    }, []);
 
     const connect = useCallback(() => {
         try {
-            const ws = new WebSocket(config.websocketUrl);
+            const ws = websocketRef();
 
             ws.onopen = () => {
                 setConnected(true);
@@ -127,8 +149,8 @@ function LinksGrid() {
     };
 
     const handleConfirmDelete = () => {
-        const ws = new WebSocket(config.websocketUrl);
-        ws.onopen = () => {
+        const ws = websocketRef();
+        if (ws.readyState === WebSocket.OPEN) {
             ws.send(JSON.stringify({
                 header: 'LINKS',
                 type: 'delete_link',
@@ -137,8 +159,18 @@ function LinksGrid() {
             }));
             setShowDeleteConfirm(false);
             setLinkToDelete(null);
-            ws.close();
-        };
+        } else {
+            ws.onopen = () => {
+                ws.send(JSON.stringify({
+                    header: 'LINKS',
+                    type: 'delete_link',
+                    url: linkToDelete.url,
+                    timestamp: linkToDelete.timestamp
+                }));
+                setShowDeleteConfirm(false);
+                setLinkToDelete(null);
+            };
+        }
     };
 
     return (
@@ -158,26 +190,25 @@ function LinksGrid() {
                     </div>
                 </div>
             )}
-            {!isAuthenticated ? (
-                <div className="passcode-overlay">
-                    <div className="passcode-container">
-                        <h2>Enter Passcode</h2>
-                        <form onSubmit={handlePasscodeSubmit}>
-                            <input
-                                type="password"
-                                value={passcode}
-                                onChange={(e) => setPasscode(e.target.value)}
-                                placeholder="Enter passcode"
-                                className={showError ? 'error' : ''}
-                            />
-                            {showError && (
-                                <div className="error-message">Incorrect passcode</div>
-                            )}
-                            <button type="submit">Submit</button>
-                        </form>
-                    </div>
+            <div className="passcode-overlay">
+                <div className="passcode-container">
+                    <h2>Enter Passcode</h2>
+                    <p>Enter the passcode to view URLs and manage links</p>
+                    <form onSubmit={handlePasscodeSubmit}>
+                        <input
+                            type="password"
+                            value={passcode}
+                            onChange={(e) => setPasscode(e.target.value)}
+                            placeholder="Enter passcode"
+                            className={showError ? 'error' : ''}
+                        />
+                        {showError && (
+                            <div className="error-message">Incorrect passcode. You can still view the links, but URLs will be hidden.</div>
+                        )}
+                        <button type="submit">Submit</button>
+                    </form>
                 </div>
-            ) : null}
+            </div>
 
             <h2>Links Collection</h2>
             <div className="connection-status">
@@ -190,7 +221,7 @@ function LinksGrid() {
                     <div
                         key={index}
                         className="link-card"
-                        onClick={isAuthenticated ? () => handleLinkClick(link.url) : undefined}
+                        onClick={isAuthenticated ? () => handleLinkClick(link.url) : () => setShowError(true)}
                     >
                         <h3 className="link-name">{link.name}</h3>
                         <p className="link-description">{link.description}</p>
