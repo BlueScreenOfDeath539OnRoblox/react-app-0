@@ -51,7 +51,7 @@ function LinksGrid() {
             newWs.onmessage = (event) => {
                 try {
                     const message = JSON.parse(event.data);
-                    console.log('Received message:', message);
+                    console.log('Received WebSocket message:', message);
 
                     if (message.header === 'LINKS') {
                         if (message.type === 'link') {
@@ -62,13 +62,30 @@ function LinksGrid() {
                                     link.timestamp === message.timestamp
                                 );
                                 if (!exists) {
+                                    console.log('Adding new link:', message);
                                     return [...prevLinks, message];
                                 }
                                 return prevLinks;
                             });
                         } else if (message.type === 'links_list') {
+                            console.log('Updating entire links list:', message.links);
                             // Replace entire links array with new list
-                            setLinks([...message.links]);
+                            setLinks(message.links || []);
+                        } else if (message.type === 'delete_link') {
+                            console.log('Processing delete for:', message.url);
+                            // Remove the link from local state
+                            setLinks(prevLinks => {
+                                const updatedLinks = prevLinks.filter(link =>
+                                    link.url !== message.url || link.timestamp !== message.timestamp
+                                );
+                                console.log('Updated links after delete:', updatedLinks);
+                                return updatedLinks;
+                            });
+
+                            // Clear selected URL if it was deleted
+                            if (selectedUrl === message.url) {
+                                setSelectedUrl(null);
+                            }
                         }
                     }
                 } catch (err) {
@@ -102,9 +119,21 @@ function LinksGrid() {
         }
     }, []);
 
+    // Effect for WebSocket connection management
     useEffect(() => {
+        console.log('Initializing WebSocket connection...');
         const cleanup = connect();
-        return cleanup;
+
+        // Cleanup function
+        return () => {
+            console.log('Cleaning up WebSocket connection...');
+            if (cleanup) cleanup();
+            if (ws) {
+                console.log('Closing existing WebSocket connection...');
+                ws.close();
+                setWs(null);
+            }
+        };
     }, [connect]);
 
     const handleLinkClick = (url) => {
@@ -149,15 +178,33 @@ function LinksGrid() {
         }
 
         try {
+            if (!linkToDelete || !linkToDelete.url || !linkToDelete.timestamp) {
+                console.error('Invalid link to delete:', linkToDelete);
+                return;
+            }
+
             console.log('Sending delete request for:', linkToDelete);
+
+            // Send delete request to server
             ws.send(JSON.stringify({
                 header: 'LINKS',
                 type: 'delete_link',
                 url: linkToDelete.url,
-                timestamp: linkToDelete.timestamp
+                timestamp: linkToDelete.timestamp,
+                name: linkToDelete.name, // Include additional fields
+                description: linkToDelete.description
             }));
+
+            // Reset delete confirmation state
             setShowDeleteConfirm(false);
             setLinkToDelete(null);
+
+            // Request updated list from server
+            ws.send(JSON.stringify({
+                header: 'LINKS',
+                type: 'request_links'
+            }));
+
         } catch (error) {
             console.error('Error sending delete request:', error);
         }
