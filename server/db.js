@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 
 // Replace this with your MongoDB connection string from Atlas
-const uri = "mongodb+srv://your_username:your_password@your_cluster_url/";
+const uri = "mongodb+srv://IAmMyGuy21th:12200906#Nh@reactappdata.j9bg76f.mongodb.net/?retryWrites=true&w=majority&appName=ReactAppData";
 const dbName = 'linksDB';
 
 let client;
@@ -9,12 +9,12 @@ let db;
 
 async function connectToDb() {
     if (db) return db;
-    
+
     try {
         client = new MongoClient(uri);
         await client.connect();
         console.log('Connected to MongoDB');
-        
+
         db = client.db(dbName);
         return db;
     } catch (error) {

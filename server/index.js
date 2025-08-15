@@ -67,7 +67,34 @@ wss.on('connection', async (ws) => {
             if (message.header === 'LINKS' && db) {
                 const linksCollection = db.collection('links');
 
-                if (message.type === 'link') {
+                if (message.type === 'delete_link') {
+                    try {
+                        // Delete the link from MongoDB
+                        await linksCollection.deleteOne({
+                            url: message.url,
+                            timestamp: message.timestamp
+                        });
+
+                        // Send updated links list to all clients
+                        const updatedLinks = await linksCollection.find({}).sort({ createdAt: -1 }).toArray();
+                        wss.clients.forEach(client => {
+                            if (client.readyState === WebSocket.OPEN) {
+                                client.send(JSON.stringify({
+                                    header: 'LINKS',
+                                    type: 'links_list',
+                                    links: updatedLinks
+                                }));
+                            }
+                        });
+                    } catch (err) {
+                        console.error('Error deleting link:', err);
+                        ws.send(JSON.stringify({
+                            header: 'ERROR',
+                            type: 'delete_failed',
+                            message: 'Failed to delete link'
+                        }));
+                    }
+                } else if (message.type === 'link') {
                     // Store new link in MongoDB
                     await linksCollection.insertOne({
                         ...message,
