@@ -1,6 +1,7 @@
 const WebSocket = require('ws');
 const express = require('express');
 const cors = require('cors');
+const { connectToDb } = require('./db');
 const app = express();
 const server = require('http').createServer(app);
 
@@ -31,28 +32,48 @@ app.get('/', (req, res) => {
     res.send('WebSocket server is running');
 });
 
-// Store messages in memory
-let messages = [];
+// Initialize MongoDB connection
+let db;
+connectToDb().then(database => {
+    db = database;
+    console.log('Connected to MongoDB');
+}).catch(err => {
+    console.error('Failed to connect to MongoDB:', err);
+});
 
-wss.on('connection', (ws) => {
+wss.on('connection', async (ws) => {
     console.log('New client connected');
 
-    // Send existing messages to new client
-    messages.forEach(message => {
-        ws.send(JSON.stringify(message));
-    });
+    // Send existing links to new client if db is connected
+    if (db) {
+        try {
+            const linksCollection = db.collection('links');
+            const links = await linksCollection.find({}).sort({ createdAt: -1 }).toArray();
+            ws.send(JSON.stringify({
+                header: 'LINKS',
+                type: 'links_list',
+                links: links
+            }));
+        } catch (err) {
+            console.error('Error sending initial links:', err);
+        }
+    }
 
-    ws.on('message', (data) => {
+    ws.on('message', async (data) => {
         try {
             const message = JSON.parse(data);
             console.log('Received message:', message);
 
-            // Add message to memory
-            messages.push(message);
+            if (message.header === 'LINKS' && db) {
+                const linksCollection = db.collection('links');
 
-            // Keep only last 100 messages
-            if (messages.length > 100) {
-                messages = messages.slice(-100);
+                if (message.type === 'link') {
+                    // Store new link in MongoDB
+                    await linksCollection.insertOne({
+                        ...message,
+                        createdAt: new Date()
+                    });
+                }
             }
 
             // Broadcast to all clients, including sender
