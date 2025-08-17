@@ -45,8 +45,12 @@ function LinksGrid() {
                 setStatus('Connected');
                 console.log('WebSocket connected');
 
-                // Request existing links
-                newWs.send(JSON.stringify({ header: 'LINKS', type: 'request_links' }));
+                // Send sync request instead of just requesting links
+                newWs.send(JSON.stringify({
+                    header: 'LINKS',
+                    type: 'sync_links',
+                    links: [] // Empty array to trigger database check
+                }));
             };
 
             newWs.onmessage = (event) => {
@@ -121,6 +125,18 @@ function LinksGrid() {
     }, []);
 
     // Effect for WebSocket connection management
+    // Effect for database synchronization
+    useEffect(() => {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            // Send sync request
+            ws.send(JSON.stringify({
+                header: 'LINKS',
+                type: 'sync_links',
+                links: links
+            }));
+        }
+    }, [ws, links]);
+
     useEffect(() => {
         console.log('Initializing WebSocket connection...');
         const cleanup = connect();

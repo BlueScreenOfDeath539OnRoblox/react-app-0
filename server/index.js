@@ -67,6 +67,32 @@ wss.on('connection', async (ws) => {
             if (message.header === 'LINKS' && db) {
                 const linksCollection = db.collection('links');
 
+                // Handle syncing websocket state with database
+                if (message.type === 'sync_links') {
+                    if (message.links && message.links.length > 0) {
+                        // If websocket has links, replace database content
+                        try {
+                            await linksCollection.deleteMany({});
+                            await linksCollection.insertMany(message.links);
+                            console.log('Database synchronized with WebSocket state');
+                        } catch (err) {
+                            console.error('Error syncing database:', err);
+                        }
+                    } else {
+                        // If no links in websocket, try to get from database
+                        const dbLinks = await linksCollection.find({}).sort({ createdAt: -1 }).toArray();
+                        if (dbLinks.length > 0) {
+                            ws.send(JSON.stringify({
+                                header: 'LINKS',
+                                type: 'links_list',
+                                links: dbLinks
+                            }));
+                            console.log('Sent database links to client');
+                        }
+                    }
+                    return;
+                }
+
                 if (message.type === 'delete_link') {
                     try {
                         // Delete the link from MongoDB
