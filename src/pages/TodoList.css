@@ -30,10 +30,65 @@
     max-width: 300px;
 }
 
+.login-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.github-signin-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #24292e;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%;
+    justify-content: center;
+}
+
+.github-signin-button:hover {
+    background-color: #2c3238;
+}
+
+.github-signin-button img {
+    width: 20px;
+    height: 20px;
+}
+
+.or-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    color: #72767d;
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+.or-divider::before,
+.or-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #40444b;
+    margin: 0 10px;
+}
+
 .username-form {
     display: flex;
     gap: 10px;
     padding: 10px;
+    width: 100%;
 }
 
 .username-input {

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import githubOauth from 'github-oauth';
 import './TodoList.css';
 import config from '../config';
 
@@ -44,7 +45,7 @@ function DiscordClone() {
 
     const connect = useCallback(() => {
         try {
-            wsRef.current = new WebSocket(config.websocketUrl);
+            wsRef.current = new WebSocket(config.websocketUrl());
 
             wsRef.current.onopen = () => {
                 console.log('Connected to server');
@@ -191,8 +192,13 @@ function DiscordClone() {
     return (
         <div className="discord-container">
             <div className="username-section">
-                {!username ? (
+                {!connected ? (
                     <div className="login-options">
+                        <button onClick={() => window.location.href = config.githubAuthUrl()} className="github-signin-button">
+                            <img src="https://github.com/favicon.ico" alt="GitHub logo" />
+                            Sign in with GitHub
+                        </button>
+                        <div className="or-divider">or</div>
                         <form onSubmit={handleUsernameSubmit} className="username-form">
                             <input
                                 type="text"
