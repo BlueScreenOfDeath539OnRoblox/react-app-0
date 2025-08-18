@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import githubOauth from 'github-oauth';
 import './TodoList.css';
 import config from '../config';
 
@@ -42,6 +41,19 @@ function DiscordClone() {
             reader.onerror = (error) => reject(error);
         });
     };
+
+    // Load saved user profile on mount
+    useEffect(() => {
+        const savedUsername = localStorage.getItem('chatUsername');
+        const savedProfile = localStorage.getItem('userProfile');
+
+        if (savedUsername) {
+            setUsername(savedUsername);
+            if (savedProfile) {
+                setUserProfile(JSON.parse(savedProfile));
+            }
+        }
+    }, []);
 
     const connect = useCallback(() => {
         try {
@@ -194,7 +206,17 @@ function DiscordClone() {
             <div className="username-section">
                 {!connected ? (
                     <div className="login-options">
-                        <button onClick={() => window.location.href = config.githubAuthUrl()} className="github-signin-button">
+                        <button
+                            onClick={() => {
+                                const params = new URLSearchParams({
+                                    client_id: config.github.clientId,
+                                    redirect_uri: config.github.redirectUri,
+                                    scope: 'read:user',
+                                    state: Math.random().toString(36).substring(7)
+                                });
+                                window.location.href = `${config.github.authorizationUrl}?${params}`;
+                            }}
+                            className="github-signin-button">
                             <img src="https://github.com/favicon.ico" alt="GitHub logo" />
                             Sign in with GitHub
                         </button>
