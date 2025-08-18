@@ -98,13 +98,6 @@ function DiscordClone() {
     const handleUsernameSubmit = (e) => {
         e.preventDefault();
         if (username.trim()) {
-            connect();
-        }
-    };
-
-    const handleUsernameSubmit = (e) => {
-        e.preventDefault();
-        if (username.trim()) {
             setUserProfile({ name: username });
             connect();
         }
