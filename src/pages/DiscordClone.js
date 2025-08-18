@@ -13,6 +13,7 @@ function DiscordClone() {
     const fileInputRef = useRef(null);
     const messagesContainerRef = useRef(null);
     const [selectedFile, setSelectedFile] = useState(null);
+    const [userProfile, setUserProfile] = useState(null);
     const [uploadPreview, setUploadPreview] = useState(null);
     const wsRef = useRef(null);
     const reconnectTimeoutRef = useRef(null);
@@ -94,8 +95,26 @@ function DiscordClone() {
         }
     }, []);
 
+    const handleUsernameSubmit = (e) => {
+        e.preventDefault();
+        if (username.trim()) {
+            connect();
+        }
+    };
+
+    const handleUsernameSubmit = (e) => {
+        e.preventDefault();
+        if (username.trim()) {
+            setUserProfile({ name: username });
+            connect();
+        }
+    };
+
     useEffect(() => {
-        connect();
+        // Only connect if we have a username
+        if (username) {
+            connect();
+        }
 
         return () => {
             if (wsRef.current) {
@@ -179,16 +198,45 @@ function DiscordClone() {
     return (
         <div className="discord-container">
             <div className="username-section">
-                <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Enter your username"
-                    className="username-input"
-                />
-                <span className={`connection-status ${connected ? 'connected' : 'disconnected'}`}>
-                    {connectionStatus}
-                </span>
+                {!username ? (
+                    <div className="login-options">
+                        <form onSubmit={handleUsernameSubmit} className="username-form">
+                            <input
+                                type="text"
+                                placeholder="Enter username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                className="username-input"
+                            />
+                            <button type="submit" className="username-submit">
+                                Join Chat
+                            </button>
+                        </form>
+                        <div className="or-divider">or</div>
+                        <form onSubmit={handleUsernameSubmit} className="username-form">
+                            <input
+                                type="text"
+                                placeholder="Enter username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                className="username-input"
+                            />
+                            <button type="submit" className="username-submit">
+                                Join Chat
+                            </button>
+                        </form>
+                    </div>
+                ) : (
+                    <div className="user-profile">
+                        {userProfile?.picture && (
+                            <img src={userProfile.picture} alt="Profile" className="profile-picture" />
+                        )}
+                        <span className="username-display">{username}</span>
+                        <span className={`connection-status ${connected ? 'connected' : 'disconnected'}`}>
+                            {connectionStatus}
+                        </span>
+                    </div>
+                )}
             </div>
 
             <div className="messages-container" ref={messagesContainerRef}>
