@@ -44,14 +44,9 @@ function DiscordClone() {
 
     // Load saved user profile on mount
     useEffect(() => {
-        const savedUsername = localStorage.getItem('chatUsername');
         const savedProfile = localStorage.getItem('userProfile');
-
-        if (savedUsername) {
-            setUsername(savedUsername);
-            if (savedProfile) {
-                setUserProfile(JSON.parse(savedProfile));
-            }
+        if (savedProfile) {
+            setUserProfile(JSON.parse(savedProfile));
         }
     }, []);
 
@@ -112,13 +107,16 @@ function DiscordClone() {
         e.preventDefault();
         if (username.trim()) {
             setUserProfile({ name: username });
+            localStorage.setItem('chatUsername', username);
             connect();
         }
     };
 
     useEffect(() => {
-        // Only connect if we have a username
-        if (username) {
+        // Connect if we have a saved username
+        const savedUsername = localStorage.getItem('chatUsername');
+        if (savedUsername && !connected) {
+            setUsername(savedUsername);
             connect();
         }
 
@@ -130,7 +128,7 @@ function DiscordClone() {
                 clearTimeout(reconnectTimeoutRef.current);
             }
         };
-    }, [connect]);
+    }, []);
 
     const handleSendMessage = async () => {
         if ((messageInput.trim() || selectedFile) && wsRef.current && connected) {
@@ -220,19 +218,6 @@ function DiscordClone() {
                             <img src="https://github.com/favicon.ico" alt="GitHub logo" />
                             Sign in with GitHub
                         </button>
-                        <div className="or-divider">or</div>
-                        <form onSubmit={handleUsernameSubmit} className="username-form">
-                            <input
-                                type="text"
-                                placeholder="Enter username"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                className="username-input"
-                            />
-                            <button type="submit" className="username-submit">
-                                Join Chat
-                            </button>
-                        </form>
                         <div className="or-divider">or</div>
                         <form onSubmit={handleUsernameSubmit} className="username-form">
                             <input
