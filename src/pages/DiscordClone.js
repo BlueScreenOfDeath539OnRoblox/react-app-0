@@ -113,9 +113,9 @@ function DiscordClone() {
     };
 
     useEffect(() => {
-        // Connect if we have a saved username
+        // Only attempt to connect if we have a saved username from a previous session
         const savedUsername = localStorage.getItem('chatUsername');
-        if (savedUsername && !connected) {
+        if (savedUsername && !connected && username === '') {  // Only connect if username is empty (initial load)
             setUsername(savedUsername);
             connect();
         }
@@ -224,7 +224,10 @@ function DiscordClone() {
                                 type="text"
                                 placeholder="Enter username"
                                 value={username}
-                                onChange={(e) => setUsername(e.target.value)}
+                                onChange={(e) => {
+                                    // Just update the username state without connecting
+                                    setUsername(e.target.value);
+                                }}
                                 className="username-input"
                             />
                             <button type="submit" className="username-submit">
