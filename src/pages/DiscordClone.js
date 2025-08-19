@@ -202,7 +202,7 @@ function DiscordClone() {
     return (
         <div className="discord-container">
             <div className="username-section">
-                {!connected ? (
+                {!username ? (
                     <div className="login-options">
                         <button
                             onClick={() => {
@@ -232,13 +232,26 @@ function DiscordClone() {
                             </button>
                         </form>
                     </div>
+                ) : !connected ? (
+                    <div className="connecting-state">
+                        <div className="user-profile">
+                            {userProfile?.picture && (
+                                <img src={userProfile.picture} alt="Profile" className="profile-picture" />
+                            )}
+                            <span className="username-display">{username}</span>
+                        </div>
+                        <div className="connecting-message">
+                            <div className="spinner"></div>
+                            <span>{connectionStatus}</span>
+                        </div>
+                    </div>
                 ) : (
                     <div className="user-profile">
                         {userProfile?.picture && (
                             <img src={userProfile.picture} alt="Profile" className="profile-picture" />
                         )}
                         <span className="username-display">{username}</span>
-                        <span className={`connection-status ${connected ? 'connected' : 'disconnected'}`}>
+                        <span className={`connection-status connected`}>
                             {connectionStatus}
                         </span>
                     </div>

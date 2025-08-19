@@ -9,9 +9,7 @@ const config = {
     github: {
         clientId: 'Ov23livF5gipe3gyMxCI',
         clientSecret: '22de9998a8e5803adbece665464486c8b68cab75',
-        redirectUri: window.location.hostname === 'localhost'
-            ? 'http://localhost:3000/react-app-0/auth/github/callback'
-            : 'https://bluescreenofdeath539onroblox.github.io/react-app-0/auth/github/callback',
+        redirectUri: 'https://bluescreenofdeath539onroblox.github.io/react-app-0/auth/github/callback',
         authorizationUrl: 'https://github.com/login/oauth/authorize',
         tokenUrl: 'https://github.com/login/oauth/access_token'
     },
