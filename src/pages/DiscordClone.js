@@ -103,15 +103,20 @@ function DiscordClone() {
         }
     }, []);
 
+    const [isEnterPressed, setIsEnterPressed] = useState(false);
+
     const handleUsernameSubmit = (e) => {
         e.preventDefault();
         const trimmedUsername = username.trim();
-        if (trimmedUsername) {
+        const isJoinButtonClicked = e.type === 'submit';
+
+        if (trimmedUsername && (isEnterPressed || isJoinButtonClicked)) {
             setUsername(trimmedUsername);
             setUserProfile({ name: trimmedUsername });
             localStorage.setItem('chatUsername', trimmedUsername);
             setConnectionStatus('Connecting...');
             connect();
+            setIsEnterPressed(false);  // Reset the flag
         }
     };
 
@@ -225,9 +230,8 @@ function DiscordClone() {
                                 onKeyDown={(e) => {
                                     if (e.key.toLowerCase() === "enter") {
                                         e.preventDefault();
-                                        if (username.trim()) {
-                                            handleUsernameSubmit(e);
-                                        }
+                                        setIsEnterPressed(true);
+                                        handleUsernameSubmit(e);
                                     }
                                 }}
                                 className="username-input"
