@@ -105,9 +105,12 @@ function DiscordClone() {
 
     const handleUsernameSubmit = (e) => {
         e.preventDefault();
-        if (username.trim()) {
-            setUserProfile({ name: username });
-            localStorage.setItem('chatUsername', username);
+        const trimmedUsername = username.trim();
+        if (trimmedUsername) {
+            setUsername(trimmedUsername);
+            setUserProfile({ name: trimmedUsername });
+            localStorage.setItem('chatUsername', trimmedUsername);
+            setConnectionStatus('Connecting...');
             connect();
         }
     };
@@ -196,7 +199,7 @@ function DiscordClone() {
     return (
         <div className="discord-container">
             <div className="username-section">
-                {!username ? (
+                {!connected ? (
                     <div className="login-options">
                         <button
                             onClick={() => {
@@ -234,7 +237,7 @@ function DiscordClone() {
                             </button>
                         </form>
                     </div>
-                ) : !connected ? (
+                ) : !userProfile ? (
                     <div className="connecting-state">
                         <div className="user-profile">
                             {userProfile?.picture && (
