@@ -15,6 +15,7 @@ import Eagler0 from './pages/EverythingEagler';
 import LinksGrid from './pages/LinksGrid';
 import AddLink from './pages/AddLink';
 import GithubCallback from './pages/GithubCallback';
+import Glassmorphism from './pages/Glassmorphism';
 
 export default function Main() {
   return (
@@ -32,6 +33,7 @@ export default function Main() {
           <Route path='links' element={<LinksGrid />} />
           <Route path='add-link' element={<AddLink />} />
           <Route path='auth/github/callback' element={<GithubCallback />} />
+          <Route path='glassmorphism' element={<Glassmorphism />} />
         </Route>
       </Routes>
     </BrowserRouter >
