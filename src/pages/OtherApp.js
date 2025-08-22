@@ -12,7 +12,6 @@ function WholeThing({ inputList }) {
 }
 
 function OtherApp() {
-  const [opened, setOpened] = useState(false);
   const [inputList, setInputList] = useState([]);
   const [bg, setBg] = useState("https://gifsec.com/wp-content/uploads/2023/01/minecraft-gif-3.gif");
   const [bgnum, setBgnum] = useState(3);
