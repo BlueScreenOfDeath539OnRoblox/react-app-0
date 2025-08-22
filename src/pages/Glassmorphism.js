@@ -29,6 +29,16 @@ function Glassmorphism() {
                             </div>
                         </div>
                     </div>
+                    <ul className="features-list">
+                        <li>Frosted glass effect</li>
+                        <li>Blurred background</li>
+                        <li>Translucent elements</li>
+                        <li>Modern UI design</li>
+                    </ul>
+                    <button className="glass-button">Click Me</button>
+                    <div className="footer">
+                        <p>Created by Hisham</p>
+                    </div>
                 </div>
             </div>
         </div>

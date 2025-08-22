@@ -240,3 +240,27 @@ img {
     line-height: 1.2rem;
     margin: 0.5rem 0;
 }
+
+.glassmorphism-container code:hover {
+    background-color: rgba(84, 173, 255, 0.3);
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
+
+.glassmorphism-container .footer {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    -webkit-backdrop-filter: blur(30px);
+    backdrop-filter: blur(30px);
+    /* Safari support */
+    background-color: blanchedalmond;
+    /* make footer completely wide */
+    width: 100%;
+    text-align: center;
+    padding: 1rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    color: black !important;
+    font-weight: bold;
+}
