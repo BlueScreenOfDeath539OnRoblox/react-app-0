@@ -27,7 +27,7 @@ const wss = new WebSocket.Server({
 });// Enable CORS for all routes
 app.use(cors());
 
-// Add a health check endpoint
+// Add health check 1 endpoint
 app.get('/', (req, res) => {
     res.send('WebSocket server is running');
 });
@@ -58,7 +58,7 @@ wss.on('connection', async (ws) => {
             console.error('Error sending initial links:', err);
         }
     }
-
+    // Parse messages from client
     ws.on('message', async (data) => {
         try {
             const message = JSON.parse(data);
@@ -121,7 +121,7 @@ wss.on('connection', async (ws) => {
                         }));
                     }
                 } else if (message.type === 'link') {
-                    // Store new link in MongoDB
+                    // Store new link in MongoDB may include header and type data
                     await linksCollection.insertOne({
                         ...message,
                         createdAt: new Date()
@@ -158,7 +158,7 @@ server.on('error', (error) => {
     console.error('HTTP Server Error:', error);
 });
 
-// Add more detailed health check
+// Add more detailed runtime health check
 app.get('/', (req, res) => {
     res.json({
         status: 'ok',
@@ -179,7 +179,7 @@ process.on('SIGTERM', () => {
         });
     });
 });
-
+// Listen on all network interfaces
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
