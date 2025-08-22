@@ -252,7 +252,7 @@ img {
     -webkit-backdrop-filter: blur(30px);
     backdrop-filter: blur(30px);
     /* Safari support */
-    background-color: blanchedalmond;
+    background-color: #40444b;
     /* make footer completely wide */
     width: 100%;
     text-align: center;
@@ -261,6 +261,6 @@ img {
     border-radius: 25px;
     display: flex;
     justify-content: center;
-    color: black !important;
+    color: #dcddde;
     font-weight: bold;
 }
