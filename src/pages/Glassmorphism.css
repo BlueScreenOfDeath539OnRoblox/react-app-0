@@ -39,11 +39,18 @@
     font-size: 1rem;
     font-weight: 500;
     cursor: pointer;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
     transition: background-color 0.2s;
 }
 
 .glassmorphism-container button:hover {
     background-color: #4752c4;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+}
+
+.glassmorphism-container button:active {
+    transform: scale(0.98);
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2) inset;
 }
 
 .glassmorphism-container input[type="text"] {
