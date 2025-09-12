@@ -38,7 +38,9 @@ function LinksGrid() {
         }
 
         try {
-            const newWs = new WebSocket(config.websocketUrl);
+            const wsUrl = config.websocketUrl();
+            console.log('Connecting to WebSocket URL:', wsUrl);
+            const newWs = new WebSocket(wsUrl);
 
             newWs.onopen = () => {
                 setConnected(true);
