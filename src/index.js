@@ -16,6 +16,7 @@ import LinksGrid from './pages/LinksGrid';
 import AddLink from './pages/AddLink';
 import GithubCallback from './pages/GithubCallback';
 import Glassmorphism from './pages/Glassmorphism';
+import Browser from './pages/Browse';
 
 export default function Main() {
   return (
@@ -34,6 +35,7 @@ export default function Main() {
           <Route path='add-link' element={<AddLink />} />
           <Route path='auth/github/callback' element={<GithubCallback />} />
           <Route path='glassmorphism' element={<Glassmorphism />} />
+          <Route path='browse' element={<Browser />} />
         </Route>
       </Routes>
     </BrowserRouter >

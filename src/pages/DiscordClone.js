@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import './TodoList.css';
+import './DiscordClone.css';
 import config from '../config';
 
 const RECONNECT_DELAY = 2000;

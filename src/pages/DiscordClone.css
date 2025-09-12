@@ -21,14 +21,6 @@
     border-bottom: 1px solid #202225;
 }
 
-.login-options {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    width: 100%;
-    max-width: 300px;
-}
 
 .login-options {
     display: flex;

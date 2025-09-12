@@ -38,6 +38,9 @@ const Layout = () => {
                         <li>
                             <Link to="glassmorphism">Glassmorphism</Link>
                         </li>
+                        <li>
+                            <Link to="browse">Browse</Link>
+                        </li>
                     </ul>
                 </nav>
 
