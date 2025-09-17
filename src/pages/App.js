@@ -47,19 +47,8 @@ function App() {
       <div className='interactivecontainer'>
         <input className="neon0" type="text" id="inp" placeholder="funny frogs" /><br />
         <button className="neon0" onClick={() => addiframe(opened, setOpened)}>Open Link</button>
-        <button className="neon0">Alert Alert</button>
         <button className="neon0" onClick={listitems}>List items in text (separated by spaces)</button>
         <WholeThing inputList={inputList} />
-        <select className="neon0">
-          <option className="neon0" value="ishaal">Ishaal</option>
-          <option className="neon0" value="hisham">Hisham</option>
-        </select>
-        <form>
-          <label>Name:
-            <input type="text" className="neon0" />
-          </label>
-          <input type="submit" className="neon0" />
-        </form>
       </div>
     </div>
   );
