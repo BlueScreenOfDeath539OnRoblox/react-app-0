@@ -39,7 +39,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Hishams TESTING SITE</h1>
+      <h1>Some Random TESTING SITE</h1>
       <div className='imgcontainer'>
         <img src="https://gifsec.com/wp-content/uploads/2023/01/minecraft-gif-20.gif" alt="Minecraft gif" />
       </div>

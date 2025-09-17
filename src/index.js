@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './pages/App';
@@ -17,29 +17,37 @@ import AddLink from './pages/AddLink';
 import GithubCallback from './pages/GithubCallback';
 import Glassmorphism from './pages/Glassmorphism';
 import Browser from './pages/Browse';
+import CaptchaVerification from './components/CaptchaVerification';
 
 export default function Main() {
+  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
+
   return (
-    <BrowserRouter basename="/react-app-0">
-      <Routes>
-        <Route path='/' element={<Layout />}>
-          <Route index element={<App />} />
-          <Route path='other' element={<OtherApp />} />
-          <Route path='testing' element={<Tests />} />
-          <Route path='discordclone' element={<DiscordClone />} />
-          <Route path='*' element={<NoPage />} />
-          <Route path='plat0' element={<Game />} />
-          <Route path='symbols' element={<Test2 />} />
-          <Route path='eagler0' element={<Eagler0 />} />
-          <Route path='links' element={<LinksGrid />} />
-          <Route path='add-link' element={<AddLink />} />
-          <Route path='auth/github/callback' element={<GithubCallback />} />
-          <Route path='glassmorphism' element={<Glassmorphism />} />
-          <Route path='browse' element={<Browser />} />
-        </Route>
-      </Routes>
-    </BrowserRouter >
-  )
+    <>
+      <CaptchaVerification onVerify={setIsCaptchaVerified} />
+      {isCaptchaVerified ? (
+        <BrowserRouter basename="/react-app-0">
+          <Routes>
+            <Route path='/' element={<Layout />}>
+              <Route index element={<App />} />
+              <Route path='other' element={<OtherApp />} />
+              <Route path='testing' element={<Tests />} />
+              <Route path='discordclone' element={<DiscordClone />} />
+              <Route path='*' element={<NoPage />} />
+              <Route path='plat0' element={<Game />} />
+              <Route path='symbols' element={<Test2 />} />
+              <Route path='eagler0' element={<Eagler0 />} />
+              <Route path='links' element={<LinksGrid />} />
+              <Route path='add-link' element={<AddLink />} />
+              <Route path='auth/github/callback' element={<GithubCallback />} />
+              <Route path='glassmorphism' element={<Glassmorphism />} />
+              <Route path='browse' element={<Browser />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      ) : null}
+    </>
+  );
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

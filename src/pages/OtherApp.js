@@ -29,7 +29,7 @@ function OtherApp() {
 
   return (
     <div className="App">
-      <h1>Hishams Other TESTING SITE</h1>
+      <h1>Some Other Random TESTING SITE</h1>
       <div className='imgcontainer'>
         <img src="https://media.tenor.com/lPsMNpUunr4AAAAd/minecraft-aesthetic-background.gif" alt="Minecraft gif" /><br />
         <div className="mcgifcontainer">
